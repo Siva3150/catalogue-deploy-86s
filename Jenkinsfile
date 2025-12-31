@@ -39,6 +39,9 @@ stage('Deploy') {
     }
 }
 
+}
+    
+
     
     // This is post-build section
         post{
