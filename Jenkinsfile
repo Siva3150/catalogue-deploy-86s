@@ -29,9 +29,12 @@ pipeline {
                 script {
                     withAWS(region: REGION, credentials: 'aws-creds') {
                         sh """
-                        aws eks update-kubeconfig \
-                          --region ${REGION} \
-                          --name ${PROJECT}-${params.deploy_to}
+
+                        aws eks update-kubeconfig --region ${REGION} --name ${PROJECT}-${params.deploy_to}
+
+                        kubectl get nodes
+
+
                         """
                     }
                 }
