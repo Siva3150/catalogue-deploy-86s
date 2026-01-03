@@ -1,4 +1,4 @@
-@Library ('jenkins_shared_library') _ 
+@Library ('jenkins-shared-library') _ 
 
 properties([
   parameters([
