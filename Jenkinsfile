@@ -1,59 +1,17 @@
-pipeline {
-    agent {
-        node {
-            label 'AGENT-1'
-        }
-    }
+@Library ('jenkins_shared_library') _ 
 
-    environment {
-        COURSE    = "Jenkins"
-        ACC_ID    = "445567085619"
-        PROJECT   = "roboshop"
-        COMPONENT = "catalogue"
-        REGION    = "us-east-1"
-    }
+properties([
+  parameters([
+    string(name: 'appVersion', defaultValue: ''),
+    string(name: 'deploy_to', defaultValue: 'dev')
+  ])
+])
 
-    options {
-        timeout(time: 30, unit: 'MINUTES')
-        disableConcurrentBuilds()
-    }
+def configMap = [
+    project: "roboshop",
+    component: "catalogue",
+    appVersion: (params.appVersion),
+    deploy_to: (params.deploy_to)
+]
 
-    parameters {
-        string(name: 'appVersion', description: 'Which app version you want to deploy')
-        choice(name: 'deploy_to', choices: ['dev', 'qa', 'prod'], description: 'Pick environment')
-    }
-
-    stages {
-        stage('Deploy') {
-            steps {
-                script {
-                    withAWS(region: REGION, credentials: 'aws-creds') {
-                        sh """
-
-                        aws eks update-kubeconfig --region ${REGION} --name ${PROJECT}-${params.deploy_to}
-
-                        kubectl get nodes
-
-
-                        """
-                    }
-                }
-            }
-        }
-    }   
-    post {
-        always {
-            echo 'I will always say Hello Again!'
-            cleanWs()
-        }
-        success {
-            echo 'I will run if pipeline success'
-        }
-        failure {
-            echo 'I will run if pipeline failure'
-        }
-        aborted {
-            echo 'Pipeline is aborted'
-        }
-    }
-}
+EKSDeploy(configMap)
