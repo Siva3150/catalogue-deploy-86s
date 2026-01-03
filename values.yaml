@@ -1,6 +1,6 @@
 deployment: 
  imageRepo: siva3150/catalogue 
- imageVersion: v1 
+ imageVersion: "latest" 
 service: 
  servicePort: 8080 # default value
 
